@@ -1,0 +1,94 @@
+﻿@model DailyPlanner.Models.UserPreferences
+@{
+    ViewData["Title"] = "Profil";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">👤 Kullanıcı Tercihleri</h2>
+
+    <form asp-action="Index" method="post" class="card p-4 shadow-sm">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="form-label">🕗 Sabah Kaçta Uyanırsın?</label>
+                <input asp-for="WakeUpTime" type="time" class="form-control" />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">🌙 Gece Kaçta Uyursun?</label>
+                <input asp-for="SleepTime" type="time" class="form-control" />
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="form-label">🍽️ Günde Kaç Öğün Yiyorsun?</label>
+                <input asp-for="MealsPerDay" type="number" min="1" max="10" class="form-control" />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">💪 Günde Kaç Saat Spor Yapıyorsun?</label>
+                <input asp-for="DailyExerciseDuration" type="time" class="form-control" />
+            </div>
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary w-50">💾 Kaydet</button>
+        </div>
+    </form>
+
+    @if (ViewBag.Message != null)
+    {
+        <div class="alert alert-success mt-3">
+            @ViewBag.Message
+        </div>
+    }
+
+
+    @if (ViewBag.Tasks != null)
+    {
+        <h4 class="mt-5 text-center">📝 Daha Önce Eklediğin Görevler</h4>
+        <ul class="list-group">
+            @foreach (var task in ViewBag.Tasks)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    @task.Description
+                    <span class="badge bg-secondary">@task.CreatedAt.ToShortTimeString()</span>
+                </li>
+            }
+        </ul>
+    }
+
+    @if (ViewBag.AIPlans != null)
+    {
+        <h5 class="mt-4">🧠 Yapay Zeka ile Oluşturulmuş Plan</h5>
+        <ul class="list-group">
+            @foreach (var plan in ViewBag.AIPlans)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>@plan.StartTime.ToString(@"hh\:mm") - @plan.EndTime.ToString(@"hh\:mm")</strong>: @plan.Description
+                    </div>
+                    <form asp-controller="Chat" asp-action="DeletePlan" method="post" asp-route-id="@plan.Id">
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Sil</button>
+                    </form>
+                </li>
+            }
+        </ul>
+    }
+
+    @if (ViewBag.PlannedTasks != null)
+    {
+        <h5 class="mt-4">🧠 Yapay Zeka Planı</h5>
+        <ul class="list-group">
+            @foreach (var plan in ViewBag.PlannedTasks)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span><strong>@plan.StartTime.ToString(@"hh\:mm") - @plan.EndTime.ToString(@"hh\:mm")</strong>: @plan.Description</span>
+                    <form asp-controller="Profile" asp-action="DeletePlannedTask" method="post" asp-route-id="@plan.Id">
+                        <button class="btn btn-sm btn-danger">Sil</button>
+                    </form>
+                </li>
+            }
+        </ul>
+    }
+
+
+</div>

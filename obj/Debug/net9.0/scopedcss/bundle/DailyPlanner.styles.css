@@ -1,0 +1,49 @@
+/* _content/DailyPlanner/Views/Shared/_Layout.cshtml.rz.scp.css */
+/* Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+a.navbar-brand[b-dw9u7ev3fp] {
+  white-space: normal;
+  text-align: center;
+  word-break: break-all;
+}
+
+a[b-dw9u7ev3fp] {
+  color: #0077cc;
+}
+
+.btn-primary[b-dw9u7ev3fp] {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.nav-pills .nav-link.active[b-dw9u7ev3fp], .nav-pills .show > .nav-link[b-dw9u7ev3fp] {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.border-top[b-dw9u7ev3fp] {
+  border-top: 1px solid #e5e5e5;
+}
+.border-bottom[b-dw9u7ev3fp] {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow[b-dw9u7ev3fp] {
+  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy[b-dw9u7ev3fp] {
+  font-size: 1rem;
+  line-height: inherit;
+}
+
+.footer[b-dw9u7ev3fp] {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 60px;
+}

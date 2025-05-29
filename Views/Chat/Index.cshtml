@@ -1,0 +1,74 @@
+﻿@model List<DailyPlanner.Models.DailyTask>
+
+
+@{
+    ViewData["Title"] = "Günlük Plan";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">🧠 Yapay Zeka ile Gününü Planla</h2>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <form asp-action="GeneratePlanFromText" method="post" class="card card-body shadow-sm bg-light">
+                <h5>📝 Görevlerini yaz, AI planlasın</h5>
+                <textarea class="form-control mb-3" name="taskText" rows="3" placeholder="Örn: Kitap oku (30 dk), spor yap (1 saat), yemek hazırla"></textarea>
+                <button type="submit" class="btn btn-success">📅 Planla</button>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <form asp-action="GeneratePlan" method="post" class="card card-body shadow-sm bg-light">
+                <h5>🧠 Kayıtlı görevlerden plan oluştur</h5>
+                <button type="submit" class="btn btn-success mt-3">✨ Yapay Zeka ile Plan Oluştur</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card card-body mb-4 shadow-sm bg-light">
+        <h5>📌 Bugünkü Görevler</h5>
+
+        <form asp-action="AddTask" method="post" class="d-flex gap-2 mb-3">
+            <input type="text" name="description" class="form-control" placeholder="Bir görev yaz ve Enter'a bas" required />
+            <button type="submit" class="btn btn-primary">Ekle</button>
+        </form>
+
+        @if (Model.Any())
+        {
+            <ul class="list-group">
+                @foreach (var task in Model)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>@task.Description</span>
+                        <div class="d-flex gap-2 align-items-center">
+                            <small class="text-muted">@task.CreatedAt.ToShortTimeString()</small>
+                            <form asp-action="DeleteTask" method="post" asp-route-id="@task.Id">
+                                <button type="submit" class="btn btn-danger btn-sm">Sil</button>
+                            </form>
+                        </div>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>Henüz görev eklemedin.</p>
+        }
+    </div>
+
+    @if (ViewBag.Plan != null)
+    {
+        var plan = (List<DailyPlanner.Models.PlannedTask>)ViewBag.Plan;
+
+        <div class="card card-body shadow-sm bg-light">
+            <h5>📋 AI Destekli Günlük Plan</h5>
+            <ul class="list-group">
+                @foreach (var p in plan)
+                {
+                    <li class="list-group-item">
+                        <strong>@p.StartTime.ToString(@"hh\:mm") - @p.EndTime.ToString(@"hh\:mm")</strong>: @p.Description
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+</div>

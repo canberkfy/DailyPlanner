@@ -1,0 +1,25 @@
+﻿@model List<DailyPlanner.Models.PlannedTask>
+
+@{
+    ViewData["Title"] = "Yapay Zeka Destekli Plan Sonucu";
+}
+
+<h2>📋 Yapay Zeka Destekli Günlük Plan</h2>
+
+@if (Model != null && Model.Any())
+{
+    <ul class="list-group">
+        @foreach (var item in Model)
+        {
+            <li class="list-group-item">
+                <strong>@item.StartTime.ToString(@"hh\:mm") - @item.EndTime.ToString(@"hh\:mm")</strong>: @item.Description
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <div class="alert alert-warning">Henüz bir plan oluşturulmamış.</div>
+}
+
+<a class="btn btn-secondary mt-3" asp-controller="Chat" asp-action="Index">← Geri Dön</a>
