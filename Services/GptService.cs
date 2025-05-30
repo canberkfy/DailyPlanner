@@ -16,7 +16,10 @@ namespace DailyPlanner.Services
         {
             _httpClientFactory = httpClientFactory;
             _apiKey = configuration["OpenAI:ApiKey"];
+
         }
+
+
 
         // ✅ Ana metot
         public async Task<string> GetOptimizedScheduleAsync(string prompt)
@@ -61,6 +64,10 @@ namespace DailyPlanner.Services
             {
                 return "❌ Yanıt beklenilen formatta değil. API'den dönen içerik: \n\n" + jsonString;
             }
+
+
         }
+
+
     }
 }

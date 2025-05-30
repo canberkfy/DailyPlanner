@@ -1,13 +1,28 @@
- **07 - 08**: Kalk
-**08 - 10**: Kitap oku
-**10 - 12**: Spor yap (60 dakika)
-**12 - 16**: Müzik dinle
-**16 - 19**: Ders çalış
-**19 - 21**: Annenle konuş
-**21 - 23**: Yemek hazırla
-**23 - 23**: Yemek yedi
-**23 - 23**: En Azure ilk 4 saat geçiş (Mola)
-**23 - 07**: Gece yat (Gece 23'te yat)
-**07 - 07**: Sabah rahat edinme
+ **07:00 - 07:30**: Kalk
 
-**Not:** Mola sihrasında, 23'de yatma istediğinizden emin olun ve önce 23 saati geçmeden 23 saat sihirlişe alın, böylece en az 4 saat aralık yarar.
+**07:30 - 08:00**: Öğüt
+
+**08:00 - 12:30**: Öğün 1 (Kitap oku, Moladır)
+**12:30 - 13:30**: Öğrenci yemek
+
+**13:30 - 17:00**: Ders çalış
+
+**17:00 - 17:30**: Moladır
+
+**17:30 - 18:30**: Müzik dinle
+
+**18:30 - 21:00**: Öğün 2 (Yazılım çalış, Moladır)
+**21:00 - 21:30**: Moladır
+**21:30 - 22:30**: Aşk salınım
+
+**22:30 - 23:00**: Öğün 3 (Köpeği gezdir)
+**23:00 - 23:30**: Moladır
+
+**23:30 - 00:00**: Araç yemek
+**00:00 - 02:00**: Bozuk yat döner (spor)
+
+**02:00 - 02:30**: Moladır
+**02:30 - 03:00**: Anneni ara
+**03:00 - 03:30**: Moladır
+**03:30 - 04:00**: Yatmak
+**04:00 - 07:00**: Uyum, yavaşca uyur (Gece programı)

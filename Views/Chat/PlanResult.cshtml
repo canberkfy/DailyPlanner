@@ -11,9 +11,12 @@
     <ul class="list-group">
         @foreach (var item in Model)
         {
-            <li class="list-group-item">
-                <strong>@item.StartTime.ToString(@"hh\:mm") - @item.EndTime.ToString(@"hh\:mm")</strong>: @item.Description
-            </li>
+            if (item.StartTime < TimeSpan.FromDays(1) && item.EndTime < TimeSpan.FromDays(1))
+            {
+                <li class="list-group-item">
+                    <strong>@item.StartTime.ToString(@"hh\:mm") - @item.EndTime.ToString(@"hh\:mm")</strong>: @item.Description
+                </li>
+            }
         }
     </ul>
 }

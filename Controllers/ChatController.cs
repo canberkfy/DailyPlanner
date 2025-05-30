@@ -109,53 +109,90 @@ namespace DailyPlanner.Controllers
 
         public async Task<IActionResult> GeneratePlan()
         {
-            var user = await _userManager.GetUserAsync(User);
-            var preferences = await _context.UserPreferences.FirstOrDefaultAsync(p => p.UserId == user.Id);
-            var taskEntities = _context.DailyTasks.Where(t => t.UserId == user.Id).ToList();
-            var taskDescriptions = taskEntities.Select(t => t.Description).ToList();
-
-            string prompt = preferences != null
-                ? $"Günlük yapılacaklar listesi: {string.Join(", ", taskDescriptions)}. Sabah saat {preferences.WakeUpTime.Hours}'de kalkıyorum, gece {preferences.SleepTime.Hours}'te yatıyorum. Günde {preferences.MealsPerDay} öğün yiyorum. Spor süresi {preferences.DailyExerciseDuration.TotalMinutes} dakika. Her öğünün arası en az 4 saat olmalı. Aralara mola da ekle."
-                : $"Günlük yapılacaklar listesi: {string.Join(", ", taskDescriptions)}. Sabah saat 8'de kalkıyorum, gece 23'te yatıyorum. Her öğünün arası en az 4 saat olmalı. Aralara mola da ekle.";
-
-            string gptResponse = await _gpt.GetOptimizedScheduleAsync(prompt);
-            System.IO.File.WriteAllText("gptResponse.txt", gptResponse);
-
-            var plannedTasks = new List<PlannedTask>();
-
-            var regex = new Regex(@"\*\*(?<start>\d{1,2})\s*-\s*(?<end>\d{1,2})\*\*\s*:?(.+)?(?<desc>.+)", RegexOptions.IgnoreCase);
-
-            foreach (var line in gptResponse.Split('\n'))
+            try
             {
-                var match = regex.Match(line);
-                if (!match.Success) continue;
-
-                if (int.TryParse(match.Groups["start"].Value, out int startHour) &&
-                    int.TryParse(match.Groups["end"].Value, out int endHour))
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
                 {
-                    plannedTasks.Add(new PlannedTask
+                    TempData["Error"] = "Kullanıcı bulunamadı.";
+                    return RedirectToAction("Index");
+                }
+
+                var preferences = await _context.UserPreferences.FirstOrDefaultAsync(p => p.UserId == user.Id);
+                var taskEntities = _context.DailyTasks.Where(t => t.UserId == user.Id).ToList();
+                var taskDescriptions = taskEntities.Select(t => t.Description).ToList();
+
+                string prompt = preferences != null
+                    ? $"Günlük yapılacaklar listesi: {string.Join(", ", taskDescriptions)}. Sabah saat {preferences.WakeUpTime.Hours:D2}:{preferences.WakeUpTime.Minutes:D2}'de kalkıyorum, gece {preferences.SleepTime.Hours:D2}:{preferences.SleepTime.Minutes:D2}'te yatıyorum. Günde {preferences.MealsPerDay} öğün yiyorum. Spor süresi {preferences.DailyExerciseDuration.TotalMinutes} dakika. Her öğünün arası en az 4 saat olmalı. Aralara mola da ekle. Lütfen saatleri 00:00 ile 23:59 arası olacak şekilde yaz."
+                    : $"Günlük yapılacaklar listesi: {string.Join(", ", taskDescriptions)}. Sabah saat 08:00'de kalkıyorum, gece 23:00'te yatıyorum. Her öğünün arası en az 4 saat olmalı. Aralara mola da ekle. Lütfen saatleri 00:00 ile 23:59 arası olacak şekilde yaz.";
+
+                // Prompt dosyaya yazılsın (debug için)
+                string logsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "logs");
+                Directory.CreateDirectory(logsPath);
+                System.IO.File.WriteAllText(Path.Combine(logsPath, "gptPrompt.txt"), prompt);
+
+                string gptResponse = await _gpt.GetOptimizedScheduleAsync(prompt);
+
+                if (string.IsNullOrWhiteSpace(gptResponse))
+                {
+                    TempData["Error"] = "Yapay zekadan bir cevap alınamadı.";
+                    return RedirectToAction("Index");
+                }
+
+                // Cevap dosyaya yazılsın
+                System.IO.File.WriteAllText(Path.Combine(logsPath, "gptResponse.txt"), gptResponse);
+
+                var plannedTasks = new List<PlannedTask>();
+                var lines = gptResponse.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+                var maxTime = new TimeSpan(23, 59, 59);
+
+                foreach (var line in lines)
+                {
+                    // Satırdan zaman aralığı ve açıklamayı ayıklama
+                    var match = Regex.Match(line, @"\*\*(?<start>\d{1,2}[:.]\d{2})\s*-\s*(?<end>\d{1,2}[:.]\d{2})\*\*\s*[:：]?\s*(?<desc>.+)");
+
+                    if (match.Success)
                     {
-                        UserId = user.Id,
-                        StartTime = TimeSpan.FromHours(startHour),
-                        EndTime = TimeSpan.FromHours(endHour),
-                        Description = match.Groups["desc"].Value.Trim(),
-                        CreatedAt = DateTime.Now
-                    });
+                        string Normalize(string t) => t.Contains(":") ? t.Replace('.', ':') : $"{t}:00";
+
+                        if (TimeSpan.TryParse(Normalize(match.Groups["start"].Value), out var start) &&
+                            TimeSpan.TryParse(Normalize(match.Groups["end"].Value), out var end) &&
+                            start <= maxTime && end <= maxTime)
+                        {
+                            plannedTasks.Add(new PlannedTask
+                            {
+                                UserId = user.Id,
+                                StartTime = start,
+                                EndTime = end,
+                                Description = match.Groups["desc"].Value.Trim(),
+                                CreatedAt = DateTime.Now
+                            });
+                        }
+                    }
+                }
+
+                if (plannedTasks.Any())
+                {
+                    _context.PlannedTasks.AddRange(plannedTasks);
+                    await _context.SaveChangesAsync();
+                    return View("PlanResult", plannedTasks);
+                }
+                else
+                {
+                    TempData["Error"] = "Yapay zekadan gelen cevap uygun formatta değil veya hiç görev ayrıştırılamadı.";
+                    return RedirectToAction("Index");
                 }
             }
-
-            if (plannedTasks.Any())
+            catch (Exception ex)
             {
-                _context.PlannedTasks.AddRange(plannedTasks);
-                await _context.SaveChangesAsync();
-                return View("PlanResult", plannedTasks);
-            }
-            else
-            {
-                TempData["Error"] = "Yapay zeka planlaması başarısız oldu. Lütfen görevlerinizi ve tercihlerinizi kontrol edin.";
+                TempData["Error"] = "Bir hata oluştu: " + ex.Message;
                 return RedirectToAction("Index");
             }
         }
+
+
+
+
 
 
         [HttpPost]

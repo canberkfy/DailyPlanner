@@ -670,3 +670,4 @@ C:\Users\canbe\Desktop\CET322 Final Project\DailyPlanner\obj\Debug\net9.0\compre
 C:\Users\canbe\Desktop\CET322 Final Project\DailyPlanner\obj\Debug\net9.0\compressed\v0zgfp0y55-87fc7y1x7t.gz
 C:\Users\canbe\Desktop\CET322 Final Project\DailyPlanner\obj\Debug\net9.0\compressed\yfc7ypekbg-mlv21k5csn.gz
 C:\Users\canbe\Desktop\CET322 Final Project\DailyPlanner\obj\Debug\net9.0\compressed\mqwuxtazfr-w9rzkm19yg.gz
+C:\Users\canbe\Desktop\CET322 Final Project\DailyPlanner\obj\Debug\net9.0\DailyPlanner.sourcelink.json

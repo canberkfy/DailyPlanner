@@ -1,0 +1,23 @@
+ **08:00 - 09:00**: Kitap oku
+
+**09:00 - 10:00**: Yazılım çalış
+
+**11:00 - 12:00**: Ders çalış
+
+**12:00 - 13:00**: Öğun yemek yeme
+
+**13:00 - 17:00**: Spor (1 saat + 4 saat molası)
+
+**17:00 - 18:00**: Müzik dinle
+
+**18:00 - 19:00**: Ders çalış
+
+**19:00 - 20:00**: Köpeği gezdir
+
+**20:00 - 21:00**: Öğun yemek yeme
+
+**21:00 - 22:00**: Anneni ara
+
+**23:00 - 23:50**: Kalıp varieties
+
+**23:50**: Yatma
